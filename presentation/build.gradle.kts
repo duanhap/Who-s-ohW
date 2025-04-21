@@ -64,5 +64,9 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation("androidx.compose.foundation:foundation:1.6.0") // Pager chính thức từ compose
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
+
+
 
 }
