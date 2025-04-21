@@ -1,4 +1,6 @@
 package com.example.who_s_ohw.ui.feature.home
 
-class HomeViewModel {
+import androidx.lifecycle.ViewModel
+
+class HomeViewModel :ViewModel() {
 }
