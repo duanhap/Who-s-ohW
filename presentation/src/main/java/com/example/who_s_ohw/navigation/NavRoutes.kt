@@ -9,6 +9,9 @@ object HomeScreen
 object RelationsScreen
 
 @Serializable
+object CameraScreen
+
+@Serializable
 object EventScreen
 
 @Serializable
