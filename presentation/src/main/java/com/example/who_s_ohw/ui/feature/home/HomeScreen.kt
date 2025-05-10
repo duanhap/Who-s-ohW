@@ -1,8 +1,14 @@
 package com.example.who_s_ohw.ui.feature.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,8 +34,15 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -46,10 +59,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.layout.ContentScale
@@ -67,6 +82,7 @@ import com.example.domain.model.Community
 import com.example.domain.model.Event
 import com.example.domain.model.Feed
 import com.example.who_s_ohw.R
+import com.example.who_s_ohw.navigation.ProfileScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import okhttp3.internal.http2.Header
@@ -80,13 +96,13 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            HomeContent()
+            HomeContent(navController)
         }
     }
 }
 
 @Composable
-fun Header() {
+fun Header(isOverlayVisible: Boolean, onImageClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,6 +125,9 @@ fun Header() {
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(90.dp)
+                    .clickable {
+                        onImageClick()
+                    }
             )
             Spacer(modifier = Modifier.width(15.dp))
             Image(
@@ -147,7 +166,7 @@ fun Header() {
 }
 
 @Composable
-fun HomeContent() {
+fun HomeContent(navController: NavController) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -155,120 +174,131 @@ fun HomeContent() {
             darkIcons = true
         )
     }
+    var isOverlayVisible by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .background(Color(0xFFEEE2BC))
-    ){
-        Header()
-        LazyColumn(
-            modifier = Modifier.background(Color(0xFFEEE2BC))
-                .fillMaxWidth()
-                .weight(1f) // chiếm hết phần còn lại
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .background(Color(0xFFEEE2BC))
         ) {
-            item {
+            Header(
+                isOverlayVisible = isOverlayVisible,
+                onImageClick = { isOverlayVisible = !isOverlayVisible })
+            LazyColumn(
+                modifier = Modifier.background(Color(0xFFEEE2BC))
+                    .fillMaxWidth()
+                    .weight(1f) // chiếm hết phần còn lại
+            ) {
+                item {
 
-                val sampleImages = listOf(
-                    "https://i.postimg.cc/c4YqnG5b/t-i-xu-ng-37.jpg",
-                    "https://i.postimg.cc/mg2wGQMy/t-i-xu-ng-29.jpg",
-                    "https://i.postimg.cc/gJfSzndk/t-i-xu-ng-45.jpg",
-                    "https://i.postimg.cc/JhFKxGsc/t-i-xu-ng-47.jpg",
-                    "https://i.postimg.cc/gj8Mnmky/t-i-xu-ng-46.jpg"
-                )
-                ImageCarouselWithAutoScroll(sampleImages)
-                HomeEventRow(
-                    events = listOf(
-                        Event(
-                            id = 1,
-                            title = "Jetpack Compose",
-                            name = "Compose Team",
-                            eventDateTime = "2025-05-01",
-                            description = "Learn how to build beautiful UIs with Compose",
-                            createdAt = "111"
-                        ),
-                        Event(
-                            id = 2,
-                            title = "Android Clean Architecture",
-                            name = "Dev Summit",
-                            eventDateTime = "2025-05-15",
-                            description = "Deep dive into Clean Architecture principles",
-                            createdAt = "112"
-                        )
-                    ), onClick = {}
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                HomeCommunityRow(
-                    communities = listOf(
-                        Community(
-                            image = "https://i.postimg.cc/pXdsXwcJ/L-y-FOLLOW-ME.jpg",
-                            name = "Family",
-                            description = "Learn how to build beautiful UIs with Compose",
-                            id = 1,
-                            memberCount = 17,
-                            isActiveEvent = true,
-                            createdByUser = 1,
-                            createdAt = "111"
-                        ),
-                        Community(
-                            image = "https://i.postimg.cc/ZRV6GRmt/Premium-Vector-Business-people-standing-together-as-a-team.jpg",
-                            name = "Company",
-                            description = "Learn how to build beautiful UIs with Compose",
-                            id = 2,
-                            memberCount = 50,
-                            isActiveEvent = true,
-                            createdByUser = 1,
-                            createdAt = "111"
-                        ),
-                        Community(
-                            image = "https://i.postimg.cc/mDRwxJFM/t-i-xu-ng-36.jpg",
-                            name = "Club",
-                            description = "Learn how to build beautiful UIs with Compose",
-                            id = 3,
-                            memberCount = 20,
-                            isActiveEvent = true,
-                            createdByUser = 1,
-                            createdAt = "111"
-                        )
-                    ), onClick = {}
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                HomeFeedRow(
-                    feeds = listOf(
-                        Feed(
-                            id = 1,
-                            userId = 1,
-                            communityId = 1,
-                            nameUser = "Harry Potter",
-                            nameCommunity = "Company",
-                            content = "Chúng ta sẽ có cuộc tập duyệt cưỡi chổi, vì vậy hãy lau chùi thật sạch chiếc xe của mình đi các bạn <3",
-                            media = "null",
-                            likeCount = 1,
-                            commentCount = 1,
-                            createdAt = "4 giờ trước",
-                            imageUser = "https://i.postimg.cc/x8NMj7GB/Daniel-Radcliffe-s-Harry-Potter-Audition-Is-Just-as-Cute-as-You-Remember.jpg"
-                        ),
-                        Feed(
-                            id = 2,
-                            userId = 2,
-                            communityId = 2,
-                            nameUser = "Hermione Granger",
-                            nameCommunity = "Club",
-                            content = "Làm xong hết công việc để đầu tháng sau  quẩy banh nóc hot pot nha mn !!",
-                            media = "null",
-                            likeCount = 123,
-                            commentCount = 55,
-                            createdAt = "6 giờ trước",
-                            imageUser = "https://i.postimg.cc/8PWXtn8y/Hermione-Granger.jpg"
-                        ),
-
+                    val sampleImages = listOf(
+                        "https://i.postimg.cc/c4YqnG5b/t-i-xu-ng-37.jpg",
+                        "https://i.postimg.cc/mg2wGQMy/t-i-xu-ng-29.jpg",
+                        "https://i.postimg.cc/gJfSzndk/t-i-xu-ng-45.jpg",
+                        "https://i.postimg.cc/JhFKxGsc/t-i-xu-ng-47.jpg",
+                        "https://i.postimg.cc/gj8Mnmky/t-i-xu-ng-46.jpg"
+                    )
+                    ImageCarouselWithAutoScroll(sampleImages)
+                    HomeEventRow(
+                        events = listOf(
+                            Event(
+                                id = 1,
+                                title = "Jetpack Compose",
+                                name = "Compose Team",
+                                eventDateTime = "2025-05-01",
+                                description = "Learn how to build beautiful UIs with Compose",
+                                createdAt = "111"
+                            ),
+                            Event(
+                                id = 2,
+                                title = "Android Clean Architecture",
+                                name = "Dev Summit",
+                                eventDateTime = "2025-05-15",
+                                description = "Deep dive into Clean Architecture principles",
+                                createdAt = "112"
+                            )
                         ), onClick = {}
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                HomeFeatureRow()
-                Spacer(modifier = Modifier.size(50.dp))
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    HomeCommunityRow(
+                        communities = listOf(
+                            Community(
+                                image = "https://i.postimg.cc/pXdsXwcJ/L-y-FOLLOW-ME.jpg",
+                                name = "Family",
+                                description = "Learn how to build beautiful UIs with Compose",
+                                id = 1,
+                                memberCount = 17,
+                                isActiveEvent = true,
+                                createdByUser = 1,
+                                createdAt = "111"
+                            ),
+                            Community(
+                                image = "https://i.postimg.cc/ZRV6GRmt/Premium-Vector-Business-people-standing-together-as-a-team.jpg",
+                                name = "Company",
+                                description = "Learn how to build beautiful UIs with Compose",
+                                id = 2,
+                                memberCount = 50,
+                                isActiveEvent = true,
+                                createdByUser = 1,
+                                createdAt = "111"
+                            ),
+                            Community(
+                                image = "https://i.postimg.cc/mDRwxJFM/t-i-xu-ng-36.jpg",
+                                name = "Club",
+                                description = "Learn how to build beautiful UIs with Compose",
+                                id = 3,
+                                memberCount = 20,
+                                isActiveEvent = true,
+                                createdByUser = 1,
+                                createdAt = "111"
+                            )
+                        ), onClick = {}
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    HomeFeedRow(
+                        feeds = listOf(
+                            Feed(
+                                id = 1,
+                                userId = 1,
+                                communityId = 1,
+                                nameUser = "Harry Potter",
+                                nameCommunity = "Company",
+                                content = "Chúng ta sẽ có cuộc tập duyệt cưỡi chổi, vì vậy hãy lau chùi thật sạch chiếc xe của mình đi các bạn <3",
+                                media = "null",
+                                likeCount = 1,
+                                commentCount = 1,
+                                createdAt = "4 giờ trước",
+                                imageUser = "https://i.postimg.cc/x8NMj7GB/Daniel-Radcliffe-s-Harry-Potter-Audition-Is-Just-as-Cute-as-You-Remember.jpg"
+                            ),
+                            Feed(
+                                id = 2,
+                                userId = 2,
+                                communityId = 2,
+                                nameUser = "Hermione Granger",
+                                nameCommunity = "Club",
+                                content = "Làm xong hết công việc để đầu tháng sau  quẩy banh nóc hot pot nha mn !!",
+                                media = "null",
+                                likeCount = 123,
+                                commentCount = 55,
+                                createdAt = "6 giờ trước",
+                                imageUser = "https://i.postimg.cc/8PWXtn8y/Hermione-Granger.jpg"
+                            ),
 
+                            ), onClick = {}
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    HomeFeatureRow()
+                    Spacer(modifier = Modifier.size(50.dp))
+
+                }
             }
         }
+        // Overlay
+        OverlayButtons(
+            navController = navController,
+            isOverlayVisible = isOverlayVisible,
+            onCloseOverlay = { isOverlayVisible = false }
+        )
 
 
     }
@@ -276,6 +306,105 @@ fun HomeContent() {
 
 }
 
+@Composable
+fun OverlayButtons(navController: NavController,isOverlayVisible: Boolean, onCloseOverlay: () -> Unit) {
+    if (isOverlayVisible) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .blur(10.dp)
+        )
+        Box(
+            modifier = Modifier
+                .padding(top = 25.dp, start = 35.dp),
+        ){
+            var isVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(isOverlayVisible) {
+                isVisible = isOverlayVisible
+            }
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                exit = fadeOut() + shrinkOut(shrinkTowards = Alignment.Center)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(150.dp)
+                ) {
+                    IconButton(
+                        onClick = { navController.navigate(ProfileScreen) },
+                        modifier = Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .size(60.dp)
+                            .align(Alignment.TopEnd)
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile",
+                            tint = Color(0xFF71361A),
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    IconButton(
+                        onClick = { /* Notification action */ },
+                        modifier = Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .size(60.dp)
+                            .align(Alignment.BottomEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notification",
+                            tint = Color(0xFF71361A),
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    IconButton(
+                        onClick = { /* Setting action */ },
+                        modifier = Modifier
+                            .background(Color.White, shape = CircleShape)
+                            .size(60.dp)
+                            .align(Alignment.BottomStart)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = Color(0xFF71361A),
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+                }
+            }
+
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top=25.dp, start = 30.dp),
+            contentAlignment = Alignment.TopStart
+        ) {
+            IconButton(onClick = { onCloseOverlay() },
+                modifier = Modifier
+                    .background(Color.White, shape = CircleShape)
+                    .size(71.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color(0xFFBA1A1A),
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }
+    }
+
+}
 @Composable
 fun SearchBar(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
     TextField(
@@ -402,8 +531,11 @@ fun HomeEventRow(events: List<Event>, onClick: (Event) -> Unit) {
         }
         Spacer(modifier = Modifier.size(8.dp))
         LazyRow(
-            modifier = Modifier.padding(start = 20.dp)
+            modifier = Modifier
         ) {
+            item{
+                Spacer(modifier = Modifier.size(10.dp))
+            }
             items(events,
                 key = { it.id }) { event ->
                 var isVisible by remember { mutableStateOf(false) }
@@ -417,6 +549,9 @@ fun HomeEventRow(events: List<Event>, onClick: (Event) -> Unit) {
                     EventItem(event = event, onClick)
                 }
             }
+            item{
+                Spacer(modifier = Modifier.size(10.dp))
+            }
         }
     }
 }
@@ -425,7 +560,7 @@ fun HomeEventRow(events: List<Event>, onClick: (Event) -> Unit) {
 fun EventItem(event: Event, onClick: (Event) -> Unit) {
     Card(
         modifier = Modifier
-            .padding(end = 20.dp, start = 3.dp)
+            .padding(horizontal = 10.dp)
             .size(width = 267.dp, height = 110.dp)
             .clickable { onClick(event) },
         shape = RoundedCornerShape(15.dp),
@@ -569,8 +704,11 @@ fun HomeCommunityRow(communities: List<Community>, onClick: (Community) -> Unit)
         }
         Spacer(modifier = Modifier.size(8.dp))
         LazyRow(
-            modifier = Modifier.padding(start = 20.dp)
+            modifier = Modifier
         ) {
+            item{
+                Spacer(modifier = Modifier.size(10.dp))
+            }
             items(communities,
                 key = { it.id }) { community ->
                 var isVisible by remember { mutableStateOf(false) }
@@ -584,6 +722,9 @@ fun HomeCommunityRow(communities: List<Community>, onClick: (Community) -> Unit)
                     CommunityItem(community = community, onClick)
                 }
             }
+            item{
+                Spacer(modifier = Modifier.size(10.dp))
+            }
         }
     }
 }
@@ -592,7 +733,7 @@ fun HomeCommunityRow(communities: List<Community>, onClick: (Community) -> Unit)
 fun CommunityItem(community: Community, onClick: (Community) -> Unit) {
     Card(
         modifier = Modifier
-            .padding(end = 20.dp, start = 3.dp)
+            .padding(horizontal = 10.dp)
             .size(width = 165.dp, height = 222.dp)
             .clickable { onClick(community) },
         shape = RoundedCornerShape(15.dp),
@@ -667,8 +808,11 @@ fun HomeFeedRow(feeds: List<Feed>, onClick: (Feed) -> Unit) {
         }
         Spacer(modifier = Modifier.size(8.dp))
         LazyRow(
-            modifier = Modifier.padding(start = 20.dp)
+            modifier = Modifier
         ) {
+            item{
+                Spacer(modifier = Modifier.size(10.dp))
+            }
             items(feeds,
                 key = { it.id }) { feed ->
                 var isVisible by remember { mutableStateOf(false) }
@@ -682,6 +826,9 @@ fun HomeFeedRow(feeds: List<Feed>, onClick: (Feed) -> Unit) {
                     FeedItem(feed = feed, onClick)
                 }
             }
+            item{
+                Spacer(modifier = Modifier.size(10.dp))
+            }
         }
     }
 }
@@ -690,7 +837,7 @@ fun HomeFeedRow(feeds: List<Feed>, onClick: (Feed) -> Unit) {
 fun FeedItem(feed: Feed, onClick: (Feed) -> Unit) {
     Card(
         modifier = Modifier
-            .padding(end = 20.dp, start = 3.dp)
+            .padding(horizontal = 10.dp)
             .size(width = 273.dp, height = 193.dp)
             .clickable { onClick(feed) },
         shape = RoundedCornerShape(15.dp),
@@ -899,6 +1046,7 @@ fun ButtonCircle(icon: Painter) {
 }
 
 
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewImageCarousel() {
@@ -915,7 +1063,7 @@ fun PreviewImageCarousel() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHeader() {
-    Header()
+    Header(true, {})
 }
 
 @Preview(showBackground = true)
