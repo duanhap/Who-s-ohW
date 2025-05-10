@@ -47,8 +47,10 @@ import com.example.who_s_ohw.navigation.CameraScreen
 import com.example.who_s_ohw.navigation.ChatScreen
 import com.example.who_s_ohw.navigation.EventScreen
 import com.example.who_s_ohw.navigation.HomeScreen
+import com.example.who_s_ohw.navigation.ProfileScreen
 import com.example.who_s_ohw.navigation.RelationsScreen
 import com.example.who_s_ohw.ui.feature.home.HomeScreen
+import com.example.who_s_ohw.ui.feature.profile.ProfileScreen
 import com.example.who_s_ohw.ui.theme.WhosohwTheme
 
 class MainActivity : ComponentActivity() {
@@ -99,12 +101,18 @@ class MainActivity : ComponentActivity() {
                                     Text(text = "Event")
                                 }
                             }
+                            composable<ProfileScreen> {
+                                shouldShowBottomNav.value = false
+                                ProfileScreen(navController)
+
+                            }
                             composable<ChatScreen> {
                                 shouldShowBottomNav.value = true
                                 Box(modifier = Modifier.fillMaxSize()) {
                                     Text(text = "Chat")
                                 }
                             }
+
 
                         }
 

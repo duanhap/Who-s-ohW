@@ -16,3 +16,6 @@ object EventScreen
 
 @Serializable
 object ChatScreen
+
+@Serializable
+object ProfileScreen
