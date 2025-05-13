@@ -19,3 +19,11 @@ object ChatScreen
 
 @Serializable
 object ProfileScreen
+
+@Serializable
+object ChangePasswordScreen
+
+@Serializable
+object NotificationScreen
+@Serializable
+object SettingScreen

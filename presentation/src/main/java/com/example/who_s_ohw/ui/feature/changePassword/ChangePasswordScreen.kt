@@ -1,4 +1,4 @@
-package com.example.who_s_ohw.ui.feature.profile
+package com.example.who_s_ohw.ui.feature.changePassword
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,38 +55,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.domain.model.Community
-import com.example.domain.model.Event
-import com.example.domain.model.Feed
 import com.example.who_s_ohw.R
-import com.example.who_s_ohw.navigation.ChangePasswordScreen
-import com.example.who_s_ohw.ui.feature.changePassword.ChangePasswordScreen
-import com.example.who_s_ohw.ui.feature.home.HomeCommunityRow
-import com.example.who_s_ohw.ui.feature.home.HomeEventRow
-import com.example.who_s_ohw.ui.feature.home.HomeFeatureRow
-import com.example.who_s_ohw.ui.feature.home.HomeFeedRow
-import com.example.who_s_ohw.ui.feature.home.HomeViewModel
-import com.example.who_s_ohw.ui.feature.home.ImageCarouselWithAutoScroll
-import com.example.who_s_ohw.ui.feature.home.OverlayButtons
-import com.example.who_s_ohw.ui.feature.home.SearchBar
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ChangePasswordScreen(navController: NavController) {
     Scaffold {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ProfileContent(navController)
+            ChangePasswordContent(navController)
         }
     }
 }
 
 @Composable
-fun HeaderProfile(navController: NavController, onImageClick: () -> Unit) {
+fun HeaderChangePassword(navController: NavController, onImageClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,7 +164,10 @@ fun HeaderProfile(navController: NavController, onImageClick: () -> Unit) {
 }
 
 @Composable
-fun ProfileContent(navController: NavController) {
+fun ChangePasswordContent(navController: NavController) {
+    var currentPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -195,10 +182,10 @@ fun ProfileContent(navController: NavController) {
             modifier = Modifier.fillMaxSize()
                 .background(Color(0xFFEEE2BC))
         ) {
-            HeaderProfile (
+            HeaderChangePassword (
                 navController = navController,
                 onImageClick = { isOverlayVisible = !isOverlayVisible })
-           // Spacer(modifier = Modifier.size(10.dp))
+            // Spacer(modifier = Modifier.size(10.dp))
             val scrollState = rememberScrollState()
             Column(
                 modifier = Modifier
@@ -206,7 +193,14 @@ fun ProfileContent(navController: NavController) {
                     .verticalScroll(scrollState)
                     .padding(0.dp)
             ) {
-                ProfileContentField(navController)
+                ChangePasswordContentField(
+                    currentPassword = currentPassword,
+                    onCurrentPasswordChange = { currentPassword = it },
+                    newPassword = newPassword,
+                    onNewPasswordChange = { newPassword = it },
+                    confirmPassword = confirmPassword,
+                    onConfirmPasswordChange = { confirmPassword = it }
+                )
             }
 
 
@@ -215,7 +209,14 @@ fun ProfileContent(navController: NavController) {
 
 }
 @Composable
-fun ProfileContentField(navController: NavController) {
+fun ChangePasswordContentField(
+    currentPassword: String,
+    onCurrentPasswordChange: (String) -> Unit,
+    newPassword: String,
+    onNewPasswordChange: (String) -> Unit,
+    confirmPassword: String,
+    onConfirmPasswordChange: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -223,7 +224,7 @@ fun ProfileContentField(navController: NavController) {
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = "Profile",
+            text = "Update Account",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             color = Color(0xFF5B2C06),
@@ -231,73 +232,38 @@ fun ProfileContentField(navController: NavController) {
             fontSize = 24.sp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(120.dp)
-        ) {
-            AsyncImage(
-                model = "https://i.postimg.cc/y8DSHsVG/Which-Bad-Harry-Potter-Witch-Are-You.jpg",
-                contentDescription = "Profile picture",
-                //placeholder = painterResource(R.drawable.placeholder),
-                error = painterResource(R.drawable.ic_relations),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-            )
-
-
-            IconButton(
-                onClick = { /* Chỉnh sửa avatar */ },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .size(35.dp)
-                    .background(Color(0xFF5B2C06), CircleShape)
-                    .border(3.dp, Color(0xFFEEE2BC), CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit",
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        ProfileField(label = "Name", value = "Severus Snape")
-        ProfileField(label = "Date of birth", value = "09/01/2004")
-        ProfileField(label = "Mobile", value = "02136612234")
-
-        Divider(
-            color = Color.Gray.copy(alpha = 0.4f),
-            thickness = 1.dp,
-            modifier = Modifier.padding(vertical = 24.dp)
-        )
-
-        Text(
-            text = "Account",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF5B2C06),
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 20.sp
-
-            )
-
-        Spacer(modifier = Modifier.height(12.dp))
 
         ProfileField(label = "Email", value = "severussnape@gmail.com")
-        ProfileField(label = "Password", value = "************")
+        ProfileFieldInput(
+            label = "Current password",
+            placeholder = "Enter your current password",
+            text = currentPassword,
+            onTextChange = onCurrentPasswordChange
+        )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        ProfileFieldInput(
+            label = "New password",
+            placeholder = "Enter your new password",
+            text = newPassword,
+            onTextChange = onNewPasswordChange
+        )
+
+        ProfileFieldInput(
+            label = "Confirm password",
+            placeholder = "Re-enter your new password",
+            text = confirmPassword,
+            onTextChange = onConfirmPasswordChange
+        )
+
+
+
+        Spacer(modifier = Modifier.height(20.dp))
+
 
         Button(
-            onClick = { navController.navigate(ChangePasswordScreen) },
+            onClick = { /* Thay đổi mật khẩu */ },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF5B2C06),
                 contentColor = Color.White
@@ -307,14 +273,13 @@ fun ProfileContentField(navController: NavController) {
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text(text = "Change password",
+            Text(text = "Confirm",
                 style = MaterialTheme.typography.bodyMedium,
                 fontSize = 20.sp)
         }
         Spacer(modifier = Modifier.height(30.dp))
     }
 }
-
 @Composable
 fun ProfileField(label: String, value: String) {
     Column(modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
@@ -344,14 +309,44 @@ fun ProfileField(label: String, value: String) {
         )
     }
 }
+@Composable
+fun ProfileFieldInput(
+    label: String,
+    placeholder: String,
+    text: String,
+    onTextChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+        Text(
+            text = label,
+            fontSize = 16.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 4.dp),
+            style = MaterialTheme.typography.titleMedium
+        )
+        OutlinedTextField(
+            value = text,
+            onValueChange = onTextChange,
+            placeholder = { Text(text = placeholder, color = Color.Gray , fontSize = 15.sp , modifier = Modifier.alpha(0.5f)) },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Black.copy(alpha = 0.5f),
+                unfocusedBorderColor = Color.Black.copy(alpha = 0.5f),
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            )
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewHeader() {
-   // HeaderProfile( ,{})
+    // HeaderProfile( ,{})
 }
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileContentField() {
-    //ProfileContentField()
+    //ChangePasswordContentField("", "", "")
 }
