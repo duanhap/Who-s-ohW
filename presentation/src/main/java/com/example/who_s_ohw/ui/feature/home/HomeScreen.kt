@@ -82,7 +82,9 @@ import com.example.domain.model.Community
 import com.example.domain.model.Event
 import com.example.domain.model.Feed
 import com.example.who_s_ohw.R
+import com.example.who_s_ohw.navigation.NotificationScreen
 import com.example.who_s_ohw.navigation.ProfileScreen
+import com.example.who_s_ohw.navigation.SettingScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import okhttp3.internal.http2.Header
@@ -350,7 +352,7 @@ fun OverlayButtons(navController: NavController,isOverlayVisible: Boolean, onClo
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     IconButton(
-                        onClick = { /* Notification action */ },
+                        onClick = { navController.navigate(NotificationScreen) },
                         modifier = Modifier
                             .background(Color.White, shape = CircleShape)
                             .size(60.dp)
@@ -365,7 +367,7 @@ fun OverlayButtons(navController: NavController,isOverlayVisible: Boolean, onClo
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     IconButton(
-                        onClick = { /* Setting action */ },
+                        onClick = { navController.navigate(SettingScreen)},
                         modifier = Modifier
                             .background(Color.White, shape = CircleShape)
                             .size(60.dp)

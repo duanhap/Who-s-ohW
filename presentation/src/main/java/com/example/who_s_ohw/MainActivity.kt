@@ -43,14 +43,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.who_s_ohw.navigation.CameraScreen
+import com.example.who_s_ohw.navigation.ChangePasswordScreen
 
 import com.example.who_s_ohw.navigation.ChatScreen
 import com.example.who_s_ohw.navigation.EventScreen
 import com.example.who_s_ohw.navigation.HomeScreen
+import com.example.who_s_ohw.navigation.NotificationScreen
 import com.example.who_s_ohw.navigation.ProfileScreen
 import com.example.who_s_ohw.navigation.RelationsScreen
+import com.example.who_s_ohw.navigation.SettingScreen
+import com.example.who_s_ohw.ui.feature.changePassword.ChangePasswordScreen
 import com.example.who_s_ohw.ui.feature.home.HomeScreen
+import com.example.who_s_ohw.ui.feature.notification.NotificationScreen
 import com.example.who_s_ohw.ui.feature.profile.ProfileScreen
+import com.example.who_s_ohw.ui.feature.setting.SettingScreen
 import com.example.who_s_ohw.ui.theme.WhosohwTheme
 
 class MainActivity : ComponentActivity() {
@@ -104,6 +110,21 @@ class MainActivity : ComponentActivity() {
                             composable<ProfileScreen> {
                                 shouldShowBottomNav.value = false
                                 ProfileScreen(navController)
+
+                            }
+                            composable<ChangePasswordScreen> {
+                                shouldShowBottomNav.value = false
+                                ChangePasswordScreen(navController)
+
+                            }
+                            composable<NotificationScreen> {
+                                shouldShowBottomNav.value = false
+                                NotificationScreen(navController)
+
+                            }
+                            composable<SettingScreen> {
+                                shouldShowBottomNav.value = false
+                                SettingScreen(navController)
 
                             }
                             composable<ChatScreen> {
