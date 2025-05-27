@@ -88,7 +88,7 @@ fun ProfileScreen(navController: NavController) {
 }
 
 @Composable
-fun HeaderProfile(navController: NavController, onImageClick: () -> Unit) {
+fun HeaderAppNormalBack(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,7 +112,7 @@ fun HeaderProfile(navController: NavController, onImageClick: () -> Unit) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(90.dp)
                     .clickable {
-                        onImageClick()
+                        // click vào nút camera
                     }
             )
             Spacer(modifier = Modifier.width(15.dp))
@@ -188,16 +188,15 @@ fun ProfileContent(navController: NavController) {
             darkIcons = true
         )
     }
-    var isOverlayVisible by remember { mutableStateOf(false) }
+    //var isOverlayVisible by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize()
                 .background(Color(0xFFEEE2BC))
         ) {
-            HeaderProfile (
-                navController = navController,
-                onImageClick = { isOverlayVisible = !isOverlayVisible })
+            HeaderAppNormalBack (
+                navController = navController)
            // Spacer(modifier = Modifier.size(10.dp))
             val scrollState = rememberScrollState()
             Column(

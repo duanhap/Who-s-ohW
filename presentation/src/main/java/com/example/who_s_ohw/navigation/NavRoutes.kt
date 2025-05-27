@@ -3,7 +3,19 @@ package com.example.who_s_ohw.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
+object SplashScreen
+
+@Serializable
 object HomeScreen
+
+@Serializable
+object SignInScreen
+
+@Serializable
+object SignUpScreen
+
+@Serializable
+object ForgetPasswordScreen
 
 @Serializable
 object RelationsScreen
@@ -25,5 +37,6 @@ object ChangePasswordScreen
 
 @Serializable
 object NotificationScreen
+
 @Serializable
 object SettingScreen

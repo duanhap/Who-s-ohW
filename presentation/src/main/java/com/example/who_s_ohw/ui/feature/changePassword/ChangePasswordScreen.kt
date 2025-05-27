@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -21,13 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -35,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -54,9 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.who_s_ohw.R
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.example.who_s_ohw.ui.feature.auth.PasswordField
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -168,13 +159,13 @@ fun ChangePasswordContent(navController: NavController) {
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    val systemUiController = rememberSystemUiController()
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            color = Color(0xFFB79B29),
-            darkIcons = true
-        )
-    }
+//    val systemUiController = rememberSystemUiController()
+//    SideEffect {
+//        systemUiController.setStatusBarColor(
+//            color = Color(0xFFB79B29),
+//            darkIcons = true
+//        )
+//    }
     var isOverlayVisible by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -236,21 +227,21 @@ fun ChangePasswordContentField(
 
 
         ProfileField(label = "Email", value = "severussnape@gmail.com")
-        ProfileFieldInput(
+        PasswordField(
             label = "Current password",
             placeholder = "Enter your current password",
             text = currentPassword,
             onTextChange = onCurrentPasswordChange
         )
 
-        ProfileFieldInput(
+        PasswordField(
             label = "New password",
             placeholder = "Enter your new password",
             text = newPassword,
             onTextChange = onNewPasswordChange
         )
 
-        ProfileFieldInput(
+        PasswordField(
             label = "Confirm password",
             placeholder = "Re-enter your new password",
             text = confirmPassword,
@@ -310,7 +301,7 @@ fun ProfileField(label: String, value: String) {
     }
 }
 @Composable
-fun ProfileFieldInput(
+fun FieldInput(
     label: String,
     placeholder: String,
     text: String,
@@ -339,6 +330,7 @@ fun ProfileFieldInput(
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
