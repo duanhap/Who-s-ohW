@@ -5,11 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -52,11 +50,16 @@ import com.example.who_s_ohw.navigation.NotificationScreen
 import com.example.who_s_ohw.navigation.ProfileScreen
 import com.example.who_s_ohw.navigation.RelationsScreen
 import com.example.who_s_ohw.navigation.SettingScreen
+import com.example.who_s_ohw.navigation.SignInScreen
+import com.example.who_s_ohw.navigation.SignUpScreen
 import com.example.who_s_ohw.ui.feature.changePassword.ChangePasswordScreen
 import com.example.who_s_ohw.ui.feature.home.HomeScreen
 import com.example.who_s_ohw.ui.feature.notification.NotificationScreen
 import com.example.who_s_ohw.ui.feature.profile.ProfileScreen
 import com.example.who_s_ohw.ui.feature.setting.SettingScreen
+import com.example.who_s_ohw.ui.feature.auth.SignInScreen
+import com.example.who_s_ohw.ui.feature.auth.SignUpScreen
+import com.example.who_s_ohw.ui.feature.splash.SplashScreen
 import com.example.who_s_ohw.ui.theme.WhosohwTheme
 
 class MainActivity : ComponentActivity() {
@@ -73,7 +76,10 @@ class MainActivity : ComponentActivity() {
                     containerColor = Color(0xFFB79B29),
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        AnimatedVisibility(visible = shouldShowBottomNav.value, enter = fadeIn()) {
+                        AnimatedVisibility(
+                            visible = shouldShowBottomNav.value,
+                            enter = fadeIn(animationSpec = tween(durationMillis = 500)), // 500ms
+                        ) {
                             BottomNavigationBar(navController)
                         }
 
@@ -84,7 +90,20 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(it)
                     ) {
-                        NavHost(navController = navController, startDestination = HomeScreen) {
+                        NavHost(navController = navController, startDestination = com.example.who_s_ohw.navigation.SplashScreen) {
+                            composable<com.example.who_s_ohw.navigation.SplashScreen> {
+                                SplashScreen(navController)
+                                shouldShowBottomNav.value = false
+                            }
+                            composable<SignInScreen>  {
+                                SignInScreen(navController)
+                                shouldShowBottomNav.value = false
+                            }
+                            composable<SignUpScreen>  {
+                                SignUpScreen(navController)
+                                shouldShowBottomNav.value = false
+                            }
+
                             composable<HomeScreen> {
                                 HomeScreen(navController)
                                 shouldShowBottomNav.value = true
