@@ -59,6 +59,7 @@ import com.example.who_s_ohw.ui.feature.profile.ProfileScreen
 import com.example.who_s_ohw.ui.feature.setting.SettingScreen
 import com.example.who_s_ohw.ui.feature.auth.SignInScreen
 import com.example.who_s_ohw.ui.feature.auth.SignUpScreen
+import com.example.who_s_ohw.ui.feature.relations.MyRelationsScreen
 import com.example.who_s_ohw.ui.feature.splash.SplashScreen
 import com.example.who_s_ohw.ui.theme.WhosohwTheme
 
@@ -109,10 +110,9 @@ class MainActivity : ComponentActivity() {
                                 shouldShowBottomNav.value = true
                             }
                             composable<RelationsScreen> {
+                                MyRelationsScreen(navController)
                                 shouldShowBottomNav.value = true
-                                Box(modifier = Modifier.fillMaxSize()) {
-                                    Text(text = "Relations")
-                                }
+
                             }
                             composable<CameraScreen> {
                                 shouldShowBottomNav.value = true

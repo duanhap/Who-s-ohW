@@ -153,10 +153,12 @@ fun SignOutContentField(
         Text(
             text = "Create your account below",
             style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+                .alpha(0.5f),
             color = Color(0xFF000000),
             fontWeight = FontWeight.Normal,
             fontSize = 13.sp
+
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -212,6 +214,8 @@ fun SignOutContentField(
             onFacebookClick = { /* Handle Facebook sign-in */ },
             onSignUpClick = { /* Handle sign-up */ }
         )
+        Spacer(modifier = Modifier.height(200.dp))
+
     }
 }
 
@@ -263,6 +267,7 @@ fun SocialSignOutSection(onGoogleClick: () -> Unit, onFacebookClick: () -> Unit,
                 )
             }
         }
+
     }
 }
 @Composable

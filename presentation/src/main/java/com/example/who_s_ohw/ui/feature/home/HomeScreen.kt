@@ -104,7 +104,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
 }
 
 @Composable
-fun Header(isOverlayVisible: Boolean, onImageClick: () -> Unit) {
+fun HeaderAppSearch(onImageClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -162,7 +162,6 @@ fun Header(isOverlayVisible: Boolean, onImageClick: () -> Unit) {
                 .padding(horizontal = 15.dp, vertical = 10.dp)
         )
 
-
     }
 
 }
@@ -183,8 +182,7 @@ fun HomeContent(navController: NavController) {
             modifier = Modifier.fillMaxSize()
                 .background(Color(0xFFEEE2BC))
         ) {
-            Header(
-                isOverlayVisible = isOverlayVisible,
+            HeaderAppSearch (
                 onImageClick = { isOverlayVisible = !isOverlayVisible })
             LazyColumn(
                 modifier = Modifier.background(Color(0xFFEEE2BC))
@@ -1065,7 +1063,7 @@ fun PreviewImageCarousel() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHeader() {
-    Header(true, {})
+    HeaderAppSearch({})
 }
 
 @Preview(showBackground = true)

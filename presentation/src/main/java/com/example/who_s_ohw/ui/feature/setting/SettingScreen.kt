@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.who_s_ohw.R
 import com.example.who_s_ohw.navigation.HomeScreen
-import com.example.who_s_ohw.ui.feature.home.Header
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

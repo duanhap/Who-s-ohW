@@ -191,7 +191,8 @@ fun SignInContentField(
         Text(
             text = "Hi ! Welcome back to Who's Who",
             style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+                .alpha(0.5f),
             color = Color(0xFF000000),
             fontWeight = FontWeight.Normal,
             fontSize = 13.sp
